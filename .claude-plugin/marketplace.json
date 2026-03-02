@@ -3,8 +3,7 @@
   "name": "everything-claude-code",
   "description": "Battle-tested Claude Code configurations from an Anthropic hackathon winner — agents, skills, hooks, commands, and rules evolved over 10+ months of intensive daily use",
   "owner": {
-    "name": "Affaan Mustafa",
-    "email": "me@affaanmustafa.com"
+    "name": "jacky99714"
   },
   "metadata": {
     "description": "Battle-tested Claude Code configurations from an Anthropic hackathon winner"
@@ -16,11 +15,10 @@
       "description": "The most comprehensive Claude Code plugin — 14+ agents, 56+ skills, 33+ commands, and production-ready hooks for TDD, security scanning, code review, and continuous learning",
       "version": "1.7.0",
       "author": {
-        "name": "Affaan Mustafa",
-        "email": "me@affaanmustafa.com"
+        "name": "jacky99714"
       },
-      "homepage": "https://github.com/affaan-m/everything-claude-code",
-      "repository": "https://github.com/affaan-m/everything-claude-code",
+      "homepage": "https://github.com/jacky99714/everything-claude-code",
+      "repository": "https://github.com/jacky99714/everything-claude-code",
       "license": "MIT",
       "keywords": [
         "agents",
