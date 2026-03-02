@@ -63,6 +63,18 @@
           }
         ],
         "description": "Capture tool use observations for continuous learning"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/hook-monitor.js\" PreToolUse",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Monitor: log PreToolUse events with timing"
       }
     ],
     "PreCompact": [
@@ -75,6 +87,18 @@
           }
         ],
         "description": "Save state before context compaction"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/hook-monitor.js\" PreCompact",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Monitor: log PreCompact events with timing"
       }
     ],
     "SessionStart": [
@@ -87,6 +111,18 @@
           }
         ],
         "description": "Load previous context and detect package manager on new session"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/hook-monitor.js\" SessionStart",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Monitor: log SessionStart events with timing"
       }
     ],
     "PostToolUse": [
@@ -153,6 +189,18 @@
           }
         ],
         "description": "Capture tool use results for continuous learning"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/hook-monitor.js\" PostToolUse",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Monitor: log PostToolUse events with timing"
       }
     ],
     "Stop": [
@@ -165,6 +213,18 @@
           }
         ],
         "description": "Check for console.log in modified files after each response"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/hook-monitor.js\" Stop",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Monitor: log Stop events with timing"
       }
     ],
     "SessionEnd": [
@@ -187,6 +247,18 @@
           }
         ],
         "description": "Evaluate session for extractable patterns"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/hook-monitor.js\" SessionEnd",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Monitor: log SessionEnd events with timing"
       }
     ]
   }
