@@ -181,7 +181,7 @@ case "${1:-start}" in
         if command -v claude &> /dev/null; then
           exit_code=0
           claude --model haiku --max-turns 3 --print \
-            "Read $OBSERVATIONS_FILE and identify patterns for the project '${PROJECT_NAME}' (user corrections, error resolutions, repeated workflows, tool preferences).
+            "Read $OBSERVATIONS_FILE and identify patterns for the project ${PROJECT_NAME} (user corrections, error resolutions, repeated workflows, tool preferences).
 If you find 3+ occurrences of the same pattern, create an instinct file in $INSTINCTS_DIR/<id>.md.
 
 CRITICAL: Every instinct file MUST use this exact format:
@@ -213,9 +213,9 @@ Rules:
 - Never include actual code snippets, only describe patterns
 - If a similar instinct already exists in $INSTINCTS_DIR/, update it instead of creating a duplicate
 - The YAML frontmatter (between --- markers) with id field is MANDATORY
-- If a pattern seems universal (not project-specific), set scope to 'global' instead of 'project'
-- Examples of global patterns: 'always validate user input', 'prefer explicit error handling'
-- Examples of project patterns: 'use React functional components', 'follow Django REST framework conventions'" \
+- If a pattern seems universal (not project-specific), set scope to global instead of project
+- Examples of global patterns: always validate user input, prefer explicit error handling
+- Examples of project patterns: use React functional components, follow Django REST framework conventions" \
             >> "$LOG_FILE" 2>&1 || exit_code=$?
           if [ "$exit_code" -ne 0 ]; then
             echo "[$(date)] Claude analysis failed (exit $exit_code)" >> "$LOG_FILE"

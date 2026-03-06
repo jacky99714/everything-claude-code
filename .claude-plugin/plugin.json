@@ -1,6 +1,6 @@
 {
   "name": "everything-claude-code",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "Complete collection of battle-tested Claude Code configs from an Anthropic hackathon winner - agents, skills, hooks, and rules evolved over 10+ months of intensive daily use",
   "author": {
     "name": "jacky99714",
