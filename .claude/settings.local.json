@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:claude.com)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(node:*)",
+      "Bash(gh api:*)",
+      "Bash(python3:*)",
+      "Bash(git:*)",
+      "Bash(bash:*)",
+      "Bash(gh search:*)",
+      "Bash(gh issue:*)"
+    ]
+  }
+}
