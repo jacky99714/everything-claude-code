@@ -87,6 +87,18 @@
           }
         ],
         "description": "Load previous context and detect package manager on new session"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/run-with-flags-shell.sh\" \"session:start:observer\" \"scripts/hooks/auto-start-observer.sh\" \"minimal,standard,strict\"",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Auto-start continuous learning observer if enabled in config"
       }
     ],
     "PostToolUse": [
