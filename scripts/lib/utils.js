@@ -208,7 +208,7 @@ function findFiles(dir, pattern, options = {}) {
 async function readStdinJson(options = {}) {
   const { timeoutMs = 5000, maxSize = 1024 * 1024 } = options;
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     let data = '';
     let settled = false;
 
@@ -343,6 +343,7 @@ function runCommand(cmd, options = {}) {
     const result = execSync(cmd, {
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'pipe'],
+      timeout: 5000, // 5s timeout to prevent hanging on git lock contention
       ...options
     });
     return { success: true, output: result.trim() };

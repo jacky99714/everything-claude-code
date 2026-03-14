@@ -12,9 +12,6 @@
 
 set -e
 
-# Hook phase from CLI argument: "pre" (PreToolUse) or "post" (PostToolUse)
-HOOK_PHASE="${1:-post}"
-
 # ─────────────────────────────────────────────
 # Read stdin first (before project detection)
 # ─────────────────────────────────────────────
@@ -73,46 +70,47 @@ if [ -f "$CONFIG_DIR/disabled" ]; then
 fi
 
 # Parse using python via stdin pipe (safe for all JSON payloads)
-# Pass HOOK_PHASE via env var since Claude Code does not include hook type in stdin JSON
-PARSED=$(echo "$INPUT_JSON" | HOOK_PHASE="$HOOK_PHASE" python3 -c '
+# Claude Code sends hook_event_name ("PreToolUse"/"PostToolUse") and
+# tool_response (not tool_output) in the stdin JSON.
+PARSED=$(echo "$INPUT_JSON" | python3 -c '
 import json
 import sys
-import os
 
 try:
     data = json.load(sys.stdin)
 
-    # Determine event type from CLI argument passed via env var.
-    # Claude Code does NOT include a "hook_type" field in the stdin JSON,
-    # so we rely on the shell argument ("pre" or "post") instead.
-    hook_phase = os.environ.get("HOOK_PHASE", "post")
-    event = "tool_start" if hook_phase == "pre" else "tool_complete"
+    # Determine event type from hook_event_name in the JSON payload.
+    # Claude Code includes "hook_event_name": "PreToolUse" or "PostToolUse".
+    hook_event = data.get("hook_event_name", "PostToolUse")
+    event = "tool_start" if hook_event == "PreToolUse" else "tool_complete"
 
     # Extract fields - Claude Code hook format
     tool_name = data.get("tool_name", data.get("tool", "unknown"))
     tool_input = data.get("tool_input", data.get("input", {}))
-    tool_output = data.get("tool_output", data.get("output", ""))
+    # Claude Code uses "tool_response" (not "tool_output")
+    tool_response = data.get("tool_response", data.get("tool_output", data.get("output", "")))
     session_id = data.get("session_id", "unknown")
     tool_use_id = data.get("tool_use_id", "")
     cwd = data.get("cwd", "")
 
-    # Truncate large inputs/outputs
+    # Truncate large inputs/outputs to keep observations manageable
     if isinstance(tool_input, dict):
         tool_input_str = json.dumps(tool_input)[:5000]
     else:
         tool_input_str = str(tool_input)[:5000]
 
-    if isinstance(tool_output, dict):
-        tool_response_str = json.dumps(tool_output)[:5000]
+    if isinstance(tool_response, dict):
+        tool_response_str = json.dumps(tool_response)[:5000]
     else:
-        tool_response_str = str(tool_output)[:5000]
+        tool_response_str = str(tool_response)[:5000]
 
+    # Always capture both input and output when available
     print(json.dumps({
         "parsed": True,
         "event": event,
         "tool": tool_name,
-        "input": tool_input_str if event == "tool_start" else None,
-        "output": tool_response_str if event == "tool_complete" else None,
+        "input": tool_input_str if tool_input_str and tool_input_str != "{}" else None,
+        "output": tool_response_str if tool_response_str else None,
         "session": session_id,
         "tool_use_id": tool_use_id,
         "cwd": cwd
@@ -166,9 +164,9 @@ observation = {
     'project_name': os.environ.get('PROJECT_NAME_ENV', 'global')
 }
 
-if parsed['input']:
+if parsed.get('input'):
     observation['input'] = parsed['input']
-if parsed['output'] is not None:
+if parsed.get('output'):
     observation['output'] = parsed['output']
 
 print(json.dumps(observation))

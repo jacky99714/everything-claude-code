@@ -131,6 +131,31 @@ case "${1:-start}" in
       exit 1
     fi
 
+    # Use a lock file to prevent race conditions from concurrent SessionStart hooks.
+    # Multiple sessions may try to start the observer simultaneously.
+    LOCK_FILE="${PROJECT_DIR}/.observer.lock"
+    mkdir -p "$(dirname "$LOCK_FILE")"
+
+    # Atomic lock using mkdir (works cross-platform, no flock needed)
+    if ! mkdir "$LOCK_FILE" 2>/dev/null; then
+      # Another process holds the lock — check if it's stale (>30s old)
+      if [ -f "$LOCK_FILE/pid" ]; then
+        lock_age=$(( $(date +%s) - $(stat -f %m "$LOCK_FILE/pid" 2>/dev/null || stat -c %Y "$LOCK_FILE/pid" 2>/dev/null || echo 0) ))
+        if [ "$lock_age" -lt 30 ]; then
+          echo "Observer start already in progress for ${PROJECT_NAME}, skipping."
+          exit 0
+        fi
+      fi
+      # Stale lock — remove and retry
+      rm -rf "$LOCK_FILE"
+      mkdir "$LOCK_FILE" 2>/dev/null || { echo "Cannot acquire lock"; exit 0; }
+    fi
+    echo "$$" > "$LOCK_FILE/pid"
+
+    # Ensure lock is released on exit
+    _release_lock() { rm -rf "$LOCK_FILE" 2>/dev/null; }
+    trap _release_lock EXIT
+
     # Check if already running
     if [ -f "$PID_FILE" ]; then
       pid=$(cat "$PID_FILE")
@@ -164,8 +189,11 @@ case "${1:-start}" in
       CLV2_IS_WINDOWS="$IS_WINDOWS" \
       "$OBSERVER_LOOP_SCRIPT" >> "$LOG_FILE" 2>&1 &
 
-    # Wait for PID file
-    sleep 2
+    # Wait for PID file with retry (instead of fixed 2s sleep)
+    for i in 1 2 3 4 5; do
+      if [ -f "$PID_FILE" ]; then break; fi
+      sleep 1
+    done
 
     if [ -f "$PID_FILE" ]; then
       pid=$(cat "$PID_FILE")
