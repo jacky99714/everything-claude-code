@@ -11,7 +11,12 @@
       "Bash(git:*)",
       "Bash(bash:*)",
       "Bash(gh search:*)",
-      "Bash(gh issue:*)"
+      "Bash(gh issue:*)",
+      "Read(//Users/wanghongxiang/.claude/homunculus/**)",
+      "mcp__notebooklm-mcp__notebook_create",
+      "mcp__notebooklm-mcp__source_add",
+      "Bash(cp /Users/wanghongxiang/Documents/claude_tools/everything-claude-code/scripts/lib/utils.js /Users/wanghongxiang/.claude/plugins/cache/jacky99714-marketplace/everything-claude-code/1.8.4/scripts/lib/utils.js && cp /Users/wanghongxiang/Documents/claude_tools/everything-claude-code/hooks/hooks.json /Users/wanghongxiang/.claude/plugins/cache/jacky99714-marketplace/everything-claude-code/1.8.4/hooks/hooks.json && echo \"Synced both files\")",
+      "Bash(echo:*)"
     ]
   }
 }
